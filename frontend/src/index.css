@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AI Career Guidance Platform Design System - Modern & Professional */
+
+@layer base {
+  :root {
+    /* Core Colors - Professional Tech Theme */
+    --background: 245 25% 97%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Primary - Deep Blue for Tech/AI Theme */
+    --primary: 215 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 215 85% 40%;
+
+    /* Secondary - Warm Accent */
+    --secondary: 45 85% 60%;
+    --secondary-foreground: 215 25% 15%;
+    --secondary-hover: 45 85% 55%;
+
+    /* Success - Green for completed skills */
+    --success: 145 65% 45%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning - Orange for skill gaps */
+    --warning: 35 85% 60%;
+    --warning-foreground: 215 25% 15%;
+
+    --muted: 220 15% 95%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 215 15% 95%;
+    --accent-foreground: 215 25% 15%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 95%;
+    --ring: 215 85% 45%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(215 85% 45%), hsl(240 75% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(45 85% 60%), hsl(35 85% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 85% 45%) 0%, hsl(240 75% 55%) 50%, hsl(280 70% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 15% 98%) 100%);
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(215 25% 15% / 0.08);
+    --shadow-medium: 0 4px 16px -4px hsl(215 25% 15% / 0.12);
+    --shadow-strong: 0 8px 32px -8px hsl(215 25% 15% / 0.16);
+    --shadow-glow: 0 0 40px hsl(215 85% 45% / 0.15);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+  }
+
+  .dark {
+    --background: 215 25% 8%;
+    --foreground: 220 15% 95%;
+
+    --card: 215 25% 10%;
+    --card-foreground: 220 15% 95%;
+
+    --popover: 215 25% 10%;
+    --popover-foreground: 220 15% 95%;
+
+    --primary: 215 85% 60%;
+    --primary-foreground: 215 25% 8%;
+    --primary-hover: 215 85% 55%;
+
+    --secondary: 45 85% 70%;
+    --secondary-foreground: 215 25% 8%;
+    --secondary-hover: 45 85% 65%;
+
+    --success: 145 65% 55%;
+    --success-foreground: 215 25% 8%;
+
+    --warning: 35 85% 70%;
+    --warning-foreground: 215 25% 8%;
+
+    --muted: 215 25% 15%;
+    --muted-foreground: 220 15% 65%;
+
+    --accent: 215 25% 15%;
+    --accent-foreground: 220 15% 95%;
+
+    --destructive: 0 75% 65%;
+    --destructive-foreground: 220 15% 95%;
+
+    --border: 215 25% 20%;
+    --input: 215 25% 15%;
+    --ring: 215 85% 60%;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(215 85% 60%), hsl(240 75% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(45 85% 70%), hsl(35 85% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 85% 60%) 0%, hsl(240 75% 65%) 50%, hsl(280 70% 70%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(215 25% 10%) 0%, hsl(215 25% 12%) 100%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
+
+@layer components {
+  /* Custom animations */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out forwards;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    transition: var(--transition-smooth);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+}
