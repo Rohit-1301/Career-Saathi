@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
@@ -11,7 +11,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children, 
   requireEmailVerification = true 
 }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isNewlyVerified, clearNewlyVerifiedFlag } = useAuth();
+  const navigate = useNavigate();
+  
+  // Redirect newly verified users to profile setup
+  useEffect(() => {
+    if (currentUser && currentUser.emailVerified && isNewlyVerified) {
+      console.log('🎉 Redirecting newly verified user to profile setup');
+      clearNewlyVerifiedFlag();
+      navigate('/dashboard?view=profile', { replace: true });
+    }
+  }, [currentUser, isNewlyVerified, clearNewlyVerifiedFlag, navigate]);
   
   // Not logged in
   if (!currentUser) {

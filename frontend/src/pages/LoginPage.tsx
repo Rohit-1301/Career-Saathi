@@ -3,6 +3,12 @@ import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert } from "@/components/ui/alert";
+import { Loader2, Mail, Lock, LogIn, UserPlus } from "lucide-react";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -83,61 +89,95 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: '10px' }}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-            style={{ width: '100%', padding: '10px', fontSize: '16px' }}
-          />
-        </div>
-        <div style={{ marginBottom: '10px' }}>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            style={{ width: '100%', padding: '10px', fontSize: '16px' }}
-          />
-        </div>
-        <button 
-          type="submit" 
-          disabled={loading}
-          style={{ 
-            width: '100%', 
-            padding: '10px', 
-            fontSize: '16px',
-            backgroundColor: loading ? '#ccc' : '#007bff',
-            color: 'white',
-            border: 'none',
-            cursor: loading ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-      <p style={{ marginTop: '15px' }}>
-        Don't have an account? <button
-          onClick={() => navigate('/signup')}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#007bff',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}
-        >
-          Sign up here
-        </button>
-      </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-3xl font-bold text-gray-900">Welcome Back</CardTitle>
+          <CardDescription className="text-gray-600">
+            Sign in to your Career Saathi account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                Email Address
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="pl-10"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                  className="pl-10"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            
+            {error && (
+              <Alert className="border-red-200 bg-red-50">
+                <div className="text-red-800 text-sm">
+                  {error}
+                </div>
+              </Alert>
+            )}
+            
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="w-full h-11 text-base font-semibold"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign In
+                </>
+              )}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-4">
+          <div className="text-center text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Button
+              variant="link"
+              onClick={() => navigate('/signup')}
+              className="p-0 h-auto font-semibold text-blue-600 hover:text-blue-800"
+            >
+              <UserPlus className="mr-1 h-4 w-4" />
+              Create free account
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

@@ -15,10 +15,12 @@ interface AuthContextType {
   loading: boolean;
   emailVerified: boolean;
   profileLoading: boolean;
+  isNewlyVerified: boolean;
   signOut: () => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
   refreshUser: () => Promise<void>;
   refreshUserProfile: () => Promise<void>;
+  clearNewlyVerifiedFlag: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,10 +29,12 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   emailVerified: false,
   profileLoading: false,
+  isNewlyVerified: false,
   signOut: async () => {},
   sendVerificationEmail: async () => {},
   refreshUser: async () => {},
-  refreshUserProfile: async () => {}
+  refreshUserProfile: async () => {},
+  clearNewlyVerifiedFlag: () => {}
 });
 
 export const useAuth = () => {
@@ -51,6 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
+  const [isNewlyVerified, setIsNewlyVerified] = useState(false);
 
   // Load user profile from Firestore
   const loadUserProfile = async (uid: string) => {
@@ -84,6 +89,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      
+      // Check if user just verified their email
+      if (user && user.emailVerified) {
+        // Check if user was previously unverified (stored in localStorage)
+        const wasUnverified = localStorage.getItem(`user-${user.uid}-was-unverified`) === 'true';
+        if (wasUnverified) {
+          console.log('🎉 User just verified their email, marking as newly verified');
+          setIsNewlyVerified(true);
+          localStorage.removeItem(`user-${user.uid}-was-unverified`);
+        }
+      } else if (user && !user.emailVerified) {
+        // Store that this user is currently unverified
+        localStorage.setItem(`user-${user.uid}-was-unverified`, 'true');
+      }
+      
       setEmailVerified(user?.emailVerified || false);
       
       // Load user profile if user is authenticated
@@ -100,6 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         console.log('🚪 User signed out');
         setUserProfile(null);
+        setIsNewlyVerified(false);
       }
       
       setLoading(false);
@@ -143,6 +164,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const clearNewlyVerifiedFlag = () => {
+    setIsNewlyVerified(false);
+  };
+
   const refreshUserProfile = async () => {
     if (currentUser) {
       await loadUserProfile(currentUser.uid);
@@ -155,10 +180,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     profileLoading,
     emailVerified,
+    isNewlyVerified,
     signOut,
     sendVerificationEmail,
     refreshUser,
-    refreshUserProfile
+    refreshUserProfile,
+    clearNewlyVerifiedFlag
   };
 
   return (
