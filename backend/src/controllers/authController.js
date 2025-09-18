@@ -1,21 +1,71 @@
 import admin from '../config/firebase.js';
+import UserService from '../services/userService.js';
 
 export const signup = async (req, res) => {
-  const { email, password, displayName, phoneNumber } = req.body;
+  const { 
+    email, 
+    password, 
+    displayName, 
+    phoneNumber,
+    firstName,
+    lastName,
+    dateOfBirth,
+    jobTitle,
+    company,
+    experience,
+    skills,
+    bio,
+    photoURL
+  } = req.body;
+
   try {
+    // Create user in Firebase Auth
     const userRecord = await admin.auth().createUser({
       email,
       password,
       displayName,
-      phoneNumber
+      phoneNumber,
+      photoURL
     });
 
-    // Here you can add additional logic to save more user details to your own database
-    // For example, using Firestore:
-    // await admin.firestore().collection('users').doc(userRecord.uid).set({ ...otherDetails });
+    // Create user profile in Firestore
+    const userProfileData = {
+      email,
+      displayName,
+      phoneNumber,
+      firstName,
+      lastName,
+      dateOfBirth,
+      jobTitle,
+      company,
+      experience,
+      skills: skills || [],
+      bio,
+      photoURL
+    };
 
-    res.status(201).json({ message: 'User created successfully', uid: userRecord.uid });
+    const userProfile = await UserService.createUserProfile(userRecord.uid, userProfileData);
+
+    res.status(201).json({ 
+      message: 'User created successfully',
+      uid: userRecord.uid,
+      profile: userProfile
+    });
   } catch (error) {
+    console.error('Signup error:', error);
+    
+    // If user was created in Auth but profile creation failed, clean up
+    if (error.message.includes('Failed to create user profile')) {
+      try {
+        // Try to get the user record to delete it
+        const userRecord = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(userRecord.uid);
+        console.log('Cleaned up auth user after profile creation failure');
+      } catch (cleanupError) {
+        console.error('Failed to cleanup auth user:', cleanupError);
+      }
+    }
+    
     res.status(400).json({ error: error.message });
   }
 };
